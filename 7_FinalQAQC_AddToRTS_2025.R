@@ -396,6 +396,8 @@ longdata<- longdata %>% select(-X.1, -X)
 glimpse(longdata)
 glimpse(datafinal)
 
+longdata$Activity_Start_Date<- ymd(longdata$Activity_Start_Date)
+
 datafinal<-datafinal %>% select(-Activity_ID)
 #rbind them
 alldata<- rbind(longdata, datafinal)
