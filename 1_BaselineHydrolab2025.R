@@ -151,6 +151,7 @@ for (i in 1:length(hlfiles)) {
   
 }
 
+
 #there are 50 warnings lets see them I think these have to do with the csv being a UTC file ####
 #the data seems fine so I think it's okay
 warnings()
