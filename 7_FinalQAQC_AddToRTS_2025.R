@@ -380,10 +380,32 @@ data6<- rbind(data5, test4)
 
 
 
+#make sure to CORRECTLY LABEL blank and duplicate #### WORK HERE ####
+#there is code to do this in 4_WQX-labs but it doesn't always work
+#so look in EDDs and see if there are any blanks or duplicates and 
+#label them here
+activity.wsheet$Activity_Type <- sub("Blank", "QC-FB", activity.wsheet$Activity_Type)
+activity.wsheet$Activity_Type <- sub("Duplicate", "QC-FD", activity.wsheet$Activity_Type)
+
+test5<-data6 %>% filter(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "12:45:00") %>% 
+  mutate(Activity_Type = case_when(Activity_ID == "WF-LK-IP2_2025-05-28_12:45:00_S" ~ "QC-FD", 
+                                   .default = test5$Activity_Type))
+
+test6<- data6 %>% filter(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "13:00:00") %>% 
+  mutate(Activity_Type = "QC-FB")
+
+#take those out of main dataframe
+data7<- data6 %>% filter(!(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "13:00:00")) %>% 
+   filter(!(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "12:45:00"))
+
+#rbind edited ones back on to dataframe
+data8<- rbind(data7, test5, test6)
+
 #now export for DEQ data base
-datafinal<-data6 %>% select(-year, -day, -month)
+datafinal<-data8 %>% select(-year, -day, -month)
 #so you know where it goes
 setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/WhitefishFinalData")
+
 
 #export data
 write.csv(datafinal, "HydroshareFinal2025.csv")
@@ -558,6 +580,13 @@ result6<- rbind(result5, test4)
 result7<- result6 %>% filter(!(Characteristic_ID == "TURB")) %>% #SHOULDke out 84
                 filter(!(Characteristic_ID == "DEPTH-SECCHI")) #TAKES OUT 14
 
+
+#re-label blank and duplicate rows IN ACTIVITY SHEET ###
+activity1<- activity %>% mutate(Activity_Type = case_when(Activity_ID == "WF-LK-IP1_2025-05-28_13:00:00_S" ~ "QC-FB",
+                                                          Activity_ID =="WF-LK-IP2_2025-05-28_12:45:00_S" ~ "QC-FD",
+                                                          .default = activity$Activity_Type))
+
+
 #NEXT STEP ####
 #NOW PUT IT ALL BACK INTO EDD/MAKE A JUMMBO EDD TO PUT IT INTO
 
@@ -571,7 +600,7 @@ edd.d <- loadWorkbook("WQX_2025_EDD.xlsx")
 writeData(wb= edd.d, sheet= "Result", x= result7,   keepNA = openxlsx_getOp("keepNA", FALSE))
 
 #acticvity
-writeData(wb= edd.d, sheet= "Activity", x= activity,   keepNA = openxlsx_getOp("keepNA", FALSE))
+writeData(wb= edd.d, sheet= "Activity", x= activity1,   keepNA = openxlsx_getOp("keepNA", FALSE))
 
 #Write final excel spreadsheet for NMLN field data
 saveWorkbook(wb= edd.d, "WQX_2025_EDD.xlsx",
