@@ -384,10 +384,11 @@ data6<- rbind(data5, test4)
 #there is code to do this in 4_WQX-labs but it doesn't always work
 #so look in EDDs and see if there are any blanks or duplicates and 
 #label them here
-activity.wsheet$Activity_Type <- sub("Blank", "QC-FB", activity.wsheet$Activity_Type)
-activity.wsheet$Activity_Type <- sub("Duplicate", "QC-FD", activity.wsheet$Activity_Type)
 
-test5<-data6 %>% filter(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "12:45:00") %>% 
+
+test5<- data6 %>% filter(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "12:45:00") 
+
+test5<- test5 %>% 
   mutate(Activity_Type = case_when(Activity_ID == "WF-LK-IP2_2025-05-28_12:45:00_S" ~ "QC-FD", 
                                    .default = test5$Activity_Type))
 
@@ -424,6 +425,9 @@ datafinal<-datafinal %>% select(-Activity_ID)
 #rbind them
 alldata<- rbind(longdata, datafinal)
 
+#fix lost loon
+alldata$Station_ID<- sub("LOSTCOO", "LOSTLOON", alldata$Station_ID)
+alldata$Station_Name<- sub("Lost Coon", "Lost Loon", alldata$Station_Name)
 #EXPORT
 write.csv(alldata, "HydroshareFinal2007-2025.csv")
 
@@ -586,6 +590,11 @@ activity1<- activity %>% mutate(Activity_Type = case_when(Activity_ID == "WF-LK-
                                                           Activity_ID =="WF-LK-IP2_2025-05-28_12:45:00_S" ~ "QC-FD",
                                                           .default = activity$Activity_Type))
 
+#FIX LOST LOON IN ACTIVITY1 AND RESULT7 LEFT OFF RIGHT HERE#######
+activity1$Station_ID<-sub("LOSTCOON|LOST-COO", "LOSTLOON", activity1$Station_ID)
+activity1$Activity_ID<- sub("LOSTCOON|LOST-COO", "LOSTLOON", activity1$Activity_ID)
+
+result7$Activity_ID<-sub("LOSTCOON|LOST-COO", "LOSTLOON", result7$Activity_ID)
 
 #NEXT STEP ####
 #NOW PUT IT ALL BACK INTO EDD/MAKE A JUMMBO EDD TO PUT IT INTO
