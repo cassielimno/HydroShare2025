@@ -399,6 +399,7 @@ test6<- data6 %>% filter(Activity_Start_Date == "2025-05-28" & Activity_Start_Ti
 data7<- data6 %>% filter(!(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "13:00:00")) %>% 
    filter(!(Activity_Start_Date == "2025-05-28" & Activity_Start_Time == "12:45:00"))
 
+
 #rbind edited ones back on to dataframe
 data8<- rbind(data7, test5, test6)
 
@@ -409,11 +410,11 @@ setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/WhitefishFinalData")
 
 
 #export data
-write.csv(datafinal, "HydroshareFinal2025.csv")
+write.csv(datafinal, "HydroshareFinal2025.csv") 
 
 
 #RBIND ON THE RTS DATAFRAME ####
-longdata<- read.csv("HydroshareFinalData2007-2024_cr12726.csv")
+longdata<- read.csv("HydroshareFinalData2007-2024_cr12726.csv") 
 
 longdata<- longdata %>% select(-X.1, -X)
 glimpse(longdata)
@@ -429,7 +430,15 @@ alldata<- rbind(longdata, datafinal)
 alldata$Station_ID<- sub("LOSTCOO", "LOSTLOON", alldata$Station_ID)
 alldata$Station_Name<- sub("Lost Coon", "Lost Loon", alldata$Station_Name)
 #EXPORT
-write.csv(alldata, "HydroshareFinal2007-2025.csv")
+write.csv(alldata, "HydroshareFinal2007-2025.csv") #YOU ALSO NEED TO RUN SCRIPT 8 BECAUSE IT FIXES SOEMTHING
+                                                  #FROM 2024
+
+
+
+
+
+
+
 
 #NEXT STEP
 #make an EDD worksheet from this results csv
@@ -614,6 +623,7 @@ writeData(wb= edd.d, sheet= "Activity", x= activity1,   keepNA = openxlsx_getOp(
 #Write final excel spreadsheet for NMLN field data
 saveWorkbook(wb= edd.d, "WQX_2025_EDD.xlsx",
              overwrite = TRUE)
+
 
 
 
